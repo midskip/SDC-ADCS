@@ -7,9 +7,14 @@
 mission.mdl = "SimulinkModel";
 open_system(mission.mdl);
 
+%% Earth parameters
+
+w_earth = [0; 0; 7.2921159 * 10^(-5)];
+
 %% Initial mission parameters
 
-mission.StartDate = datetime(2022,1,1,12,0,0);
+mission.StartDate = datetime(2025,1,1,12,0,0);
+datetime(2025,1,1,12,0,0)
 %mission.Duration = days(1.5);
 mission.Duration = hours(1);
 
@@ -71,7 +76,7 @@ set_param(mission.mdl, ...
     "RelTol",     "0.5e-5", ...
     "AbsTol",     "1e-5", ...
     "MaxStep",    "5", ...
-    "MinStep", "1", ...
+    "MinStep", "0.1", ...
     "StopTime",   string(seconds(mission.Duration)));
 %"MinStep",    "auto", ... % Theoretically, but takes soooo long
 
@@ -130,8 +135,8 @@ sun_snsr = conicalSensor(sat, MaxViewAngle=60, MountingLocation = [0 5 0], Mount
 
 %% View sat 3D model
 
-viewer1 = satelliteScenarioViewer(scenario);
+%viewer1 = satelliteScenarioViewer(scenario);
 
-sat.Visual3DModel = "SmallSat.glb";
-coordinateAxes(sat, Scale=2);
-camtarget(viewer1, sat);
+%sat.Visual3DModel = "SmallSat.glb";
+%coordinateAxes(sat, Scale=2);
+%camtarget(viewer1, sat);
