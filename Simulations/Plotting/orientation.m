@@ -1,60 +1,38 @@
+qT = mission.SimOutput.dynamics_output.q_b2icrf.Data(12:end, :);
+q_Est = squeeze(mission.SimOutput.navigation.nav_mekf.state.Data(1:4, :, 12:end))';
 
+%% Calculate stuff
 
-simDuration = 5;
-fps = 60;
-numFrames = simDuration * fps;
+sm_err = zeros(size(qT, 1), 3);
+eul_err = zeros(size(qT, 1), 3);
+for i = 1:size(qT, 1)
+    qT_i = qT(i, :);
+    q_Est_i = q_Est(i, :);
+    this_q_err = quatmultiply(quatinv(q_Est_i), qT_i);
+    %q_err(i, :) = this_q_err;
+    sm_err(i, :) = this_q_err(2:4);
 
-quat = out.dynamics.attitude.Data(:, 1:4);
-jd_time = out.dynamics.time.Data(:, :);
-utc_time = datetime(jd_time,'convertfrom','juliandate');
-pos = out.dynamics.position.Data(:, :);
-% TODO incorporate position somehow
-N = size(quat, 1);
-
-
-
-
-
-%display(R_BT)
-
-idx = round(linspace(1, N, numFrames));
-
-
-figure;
-ax = axes;
-grid(ax, 'on');
-axis(ax, [-1 1 -1 1 -1 1]);
-view(3);
-title('NED Animation');
-
-
-h = poseplot(quaternion(eye(3), 'rotmat', 'frame'), [0 0 0], 'Parent', ax);
-
-
-v = VideoWriter('C:\Users\abhay\Videos\something2.avi');
-v.FrameRate = fps;
-open(v);
-
-
-for k = 2:length(idx)
-    utc_time_vec = datevec(utc_time(idx(k)));
-    lla = eci2lla(pos(idx(k), :), utc_time_vec);
-    R_TE = dcmecef2ned(lla(1), lla(2));
-    R_EI = dcmeci2ecef('IAU-2000/2006', utc_time_vec);
-    wgs84 = wgs84Ellipsoid('kilometer');
-    %R_TE = ned2ecef(0, 0, 0, lla(1), lla(2), lla(3), wgs84);
-    %R_EI = ecef2eci(utc_time, [0, 0, 0], [0, 0, 0]);
-    R_BT = R_TE' * R_EI' * quat2dcm(quat(idx(k), :));
-    q_BT = dcm2quat(R_BT);
-    
-    q_orientation = quaternion(q_BT);
-    %quat = ned2ecef(0, 0, 0, ) * ecef2eci()
-
-    %quat = 
-    set(h, 'Orientation', q_orientation);
-    drawnow limitrate;
-    frame = getframe(gcf);
-    writeVideo(v, frame);
+    eul_err(i, :) = wrapTo180(rad2deg(quat2eul(qT_i, "XYZ")) - rad2deg(quat2eul(q_Est_i, "XYZ")));
 end
 
-close(v);
+
+%% Euler angles
+
+plot(mission.SimOutput.tout(12:end, :), eul_err(:, 1), 'r', 'DisplayName', 'Error'); hold on;
+plot(mission.SimOutput.tout(12:end, :), eul_err(:, 2), 'g', 'DisplayName', 'Error');
+plot(mission.SimOutput.tout(12:end, :), eul_err(:, 3), 'b', 'DisplayName', 'Error');
+
+%% Quat error (I think)
+
+%{
+plot(mission.SimOutput.tout(12:end, :), sm_err(:, 1), 'r', 'DisplayName', 'Error'); hold on;
+plot(mission.SimOutput.tout(12:end, :), sm_err(:, 2), 'g', 'DisplayName', 'Error');
+plot(mission.SimOutput.tout(12:end, :), sm_err(:, 3), 'b', 'DisplayName', 'Error');
+%}
+
+
+%plot(mission.SimOutput.tout(12:end, :), -1.0 * squeeze(mission.SimOutput.navigation.od_kf.P.Data(1, 1, 12:end)));
+%plot(mission.SimOutput.tout(12:end, :), 1.0 * squeeze(mission.SimOutput.navigation.od_kf.P.Data(1, 1, 12:end))); hold off
+
+legend('X', 'Y', 'Z', 'X+ bounds', 'X- bounds')
+

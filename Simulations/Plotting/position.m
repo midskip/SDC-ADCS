@@ -6,4 +6,8 @@ plot(mission.SimOutput.tout(12:end, :), difference(:, 3), 'b', 'DisplayName', 'E
 plot(mission.SimOutput.tout(12:end, :), -1.0 * squeeze(mission.SimOutput.navigation.od_kf.P.Data(1, 1, 12:end)));
 plot(mission.SimOutput.tout(12:end, :), 1.0 * squeeze(mission.SimOutput.navigation.od_kf.P.Data(1, 1, 12:end))); hold off
 
+xlabel('Time (s)');
+ylabel('Position Error (ICRF)');
+title('Position Error Analysis');
+
 legend('X', 'Y', 'Z', 'X+ bounds', 'X- bounds')

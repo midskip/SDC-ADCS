@@ -11,12 +11,18 @@ open_system(mission.mdl);
 
 w_earth = [0; 0; 7.2921159 * 10^(-5)];
 
+%% Initial EKF parameters
+
+pod_kf_initial_P = [1e2; 1e2; 1e2; 1e2; 1e2; 1e2];
+
+nav_mekf_initial_P = [1e-2; 1e-2; 1e-2]; % Note just the quat for now
+
 %% Initial mission parameters
 
 mission.StartDate = datetime(2025,1,1,12,0,0);
 datetime(2025,1,1,12,0,0)
 %mission.Duration = days(1.5);
-mission.Duration = hours(1);
+mission.Duration = hours(0.025);
 
 %% Clock offset
 
@@ -76,7 +82,7 @@ set_param(mission.mdl, ...
     "RelTol",     "0.5e-5", ...
     "AbsTol",     "1e-5", ...
     "MaxStep",    "5", ...
-    "MinStep", "0.1", ...
+    "MinStep", "0.01", ...
     "StopTime",   string(seconds(mission.Duration)));
 %"MinStep",    "auto", ... % Theoretically, but takes soooo long
 
