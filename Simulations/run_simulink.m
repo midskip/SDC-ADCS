@@ -9,7 +9,7 @@ open_system(mission.mdl);
 
 %% Earth parameters
 
-w_earth = [0; 0; 7.2921159 * 10^(-5)];
+w_earth = [0; 0; 7.2921159 * 10^(-5)]; % Note: Used for GPS velocity simulation, not high accuracy incl. nutation, etc.
 
 %% Initial EKF parameters
 
@@ -39,8 +39,8 @@ mission.Satellite.RAAN           = 0; % degrees
 mission.Satellite.TrueAnomaly    = 0; % degrees
 
 random_quat = rand(1, 4);
-initial_q_BI = random_quat / norm(random_quat);
-mission.Satellite.q0 = initial_q_BI;
+initial_q_IB = random_quat / norm(random_quat);
+mission.Satellite.q0 = initial_q_IB;
 mission.Satellite.pqr = [10, 5, 2.5]; % deg/s Change to desired tumble rate
 
 %% Initialize sat dynamics properties
@@ -81,8 +81,8 @@ set_param(mission.mdl, ...
     "SolverName", "VariableStepAuto", ...
     "RelTol",     "0.5e-5", ...
     "AbsTol",     "1e-5", ...
-    "MaxStep",    "5", ...
-    "MinStep", "0.01", ...
+    "MaxStep",    "0.01", ...
+    "MinStep", "0.001", ...
     "StopTime",   string(seconds(mission.Duration)));
 %"MinStep",    "auto", ... % Theoretically, but takes soooo long
 
