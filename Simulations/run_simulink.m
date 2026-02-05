@@ -17,6 +17,10 @@ pod_kf_initial_P = [1e2; 1e2; 1e2; 1e2; 1e2; 1e2];
 
 nav_mekf_initial_P = [1e-2; 1e-2; 1e-2]; % Note just the quat for now
 
+R_mag = diag([1; 2; 3]); % TODO change later to actual values
+
+R_sun = diag([1; 2; 3]); % TODO change later to actual values
+
 %% Initial mission parameters
 
 mission.StartDate = datetime(2025,1,1,12,0,0);
