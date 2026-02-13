@@ -1,7 +1,7 @@
 qT = mission.SimOutput.dynamics_output.q_b2icrf.Data(12:end, :);
 %q_Est = squeeze(mission.SimOutput.navigation.nav_mekf.mekf.state.Data(1:4, :, 12:end))';
-q_Est = squeeze(mission.SimOutput.navigation.nav_mekf.rawdog_triad.state.Data(1:4, :, 12:end))';
-%q_Est = squeeze(mission.SimOutput.navigation.nav_mekf.rawdog_prop.state.Data(1:4, :, 12:end))';
+%q_Est = squeeze(mission.SimOutput.navigation.nav_mekf.rawdog_triad.state.Data(1:4, :, 12:end))';
+q_Est = squeeze(mission.SimOutput.navigation.nav_mekf.rawdog_prop.state.Data(1:4, :, 12:end))';
 
 %% Calculate stuff
 
@@ -20,19 +20,19 @@ end
 
 %% Euler angles
 
-
+%{
 plot(mission.SimOutput.tout(12:end, :), eul_err(:, 1), 'r', 'DisplayName', 'Error'); hold on;
 plot(mission.SimOutput.tout(12:end, :), eul_err(:, 2), 'g', 'DisplayName', 'Error');
 plot(mission.SimOutput.tout(12:end, :), eul_err(:, 3), 'b', 'DisplayName', 'Error');
-
+%}
 
 %% Quat error (I think)
 
-%{
+
 plot(mission.SimOutput.tout(12:end, :), sm_err(:, 1), 'r', 'DisplayName', 'Error'); hold on;
 plot(mission.SimOutput.tout(12:end, :), sm_err(:, 2), 'g', 'DisplayName', 'Error');
 plot(mission.SimOutput.tout(12:end, :), sm_err(:, 3), 'b', 'DisplayName', 'Error');
-%}
+
 
 
 %plot(mission.SimOutput.tout(12:end, :), -1.0 * squeeze(mission.SimOutput.navigation.od_kf.P.Data(1, 1, 12:end)));
