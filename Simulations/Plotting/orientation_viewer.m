@@ -4,10 +4,10 @@ simDuration = 5;
 fps = 60;
 numFrames = simDuration * fps;
 
-quat = out.dynamics.attitude.Data(:, 1:4);
-jd_time = out.dynamics.time.Data(:, :);
-utc_time = datetime(jd_time,'convertfrom','juliandate');
-pos = out.dynamics.position.Data(:, :);
+quat = mission.SimOutput.dynamics_output.q_b2icrf.Data(12:end, 1:4);
+%jd_time = out.dynamics.time.Data(:, :);
+%utc_time = datetime(jd_time,'convertfrom','juliandate');
+%pos = out.dynamics.position.Data(:, :);
 % TODO incorporate position somehow
 N = size(quat, 1);
 

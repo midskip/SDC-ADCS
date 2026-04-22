@@ -40,3 +40,4 @@ plot(mission.SimOutput.tout(12:end, :), sm_err(:, 3), 'b', 'DisplayName', 'Error
 
 legend('X', 'Y', 'Z', 'X+ bounds', 'X- bounds')
 
+ylim([-1 1]);
